@@ -11,11 +11,12 @@ export class ScrollController {
   private readonly lenis: Lenis
   private readonly scrollSpace: HTMLDivElement
   private readonly onActivity: () => void
-  private progress = 0
+  private progress: number
   private isProgrammaticScroll = false
 
   constructor(options: ScrollControllerOptions) {
     this.onActivity = options.onActivity
+    this.progress = clamp(options.initialProgress)
     this.scrollSpace = document.createElement('div')
     this.scrollSpace.className = 'scroll-space'
     document.body.appendChild(this.scrollSpace)
@@ -66,7 +67,7 @@ export class ScrollController {
 
   private jumpTo(progress: number): void {
     this.isProgrammaticScroll = true
-    this.lenis.scrollTo(this.limit * clamp(progress), { immediate: true })
+    this.lenis.scrollTo(this.progressToScrollY(progress), { immediate: true })
     this.progress = this.readProgress()
     requestAnimationFrame(() => {
       this.isProgrammaticScroll = false
@@ -81,7 +82,7 @@ export class ScrollController {
       duration,
       ease: 'power2.inOut',
       onUpdate: () => {
-        this.lenis.scrollTo(this.limit * state.progress, { immediate: true })
+        this.lenis.scrollTo(this.progressToScrollY(state.progress), { immediate: true })
         this.progress = state.progress
       },
       onComplete: () => {
@@ -95,7 +96,11 @@ export class ScrollController {
   }
 
   private readProgress(): number {
-    return clamp(window.scrollY / this.limit)
+    return clamp(1 - window.scrollY / this.limit)
+  }
+
+  private progressToScrollY(progress: number): number {
+    return this.limit * (1 - clamp(progress))
   }
 
   private readonly handleManualActivity = (): void => {

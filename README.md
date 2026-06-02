@@ -17,6 +17,7 @@ Browser-first MVP for the ASCENT museum installation: a scroll-driven cinematic 
 - Adaptive quality presets and low-FPS downgrade.
 - Generated WebAudio ambience after first user gesture.
 - Idle reset back to ground after 60 seconds.
+- Inverted ascent interaction: the exhibit starts at ground at the bottom of the virtual scroll area, and scrolling upward ascends through zones.
 
 ## Commands
 
