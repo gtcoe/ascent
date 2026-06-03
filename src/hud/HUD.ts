@@ -15,7 +15,7 @@ export class HUD {
       <div class="hud__top">
         <div class="hud__brand">
           <div class="hud__title">ASCENT</div>
-          <div class="hud__subtitle">Interactive ground-to-cloud museum prototype</div>
+          <div class="hud__subtitle">Interactive ground-to-orbit museum prototype</div>
         </div>
         <div class="hud__readout">
           <div class="hud__altitude">0 m</div>

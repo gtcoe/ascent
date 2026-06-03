@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import type { QualityPreset, ZoneState } from '../types'
-import { lerp } from '../utils/math'
+import { lerp, smoothstep } from '../utils/math'
 
 interface CloudNode {
   sprite: THREE.Sprite
@@ -34,7 +34,8 @@ export class CloudSystem {
   }
 
   update(state: ZoneState, elapsed: number): void {
-    const density = state.visual.cloudDensity
+    const upperAtmosphereFade = 1 - smoothstep(0.64, 0.84, state.progress)
+    const density = state.visual.cloudDensity * upperAtmosphereFade
     const bandMin = state.visual.cloudBand[0]
     const bandMax = state.visual.cloudBand[1]
 

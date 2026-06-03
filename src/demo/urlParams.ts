@@ -1,4 +1,5 @@
 import type { QualityName } from '../types'
+import { ZONES } from '../zones/zoneConfig'
 
 export interface DemoParams {
   debug: boolean
@@ -18,6 +19,7 @@ export function readDemoParams(search = window.location.search): DemoParams {
     initialQuality: qualityValues.includes(quality as QualityName)
       ? (quality as QualityName)
       : 'high',
-    initialZone: Number.isInteger(zone) && zone >= 1 && zone <= 5 ? zone : undefined,
+    initialZone:
+      Number.isInteger(zone) && ZONES.some((entry) => entry.id === zone) ? zone : undefined,
   }
 }

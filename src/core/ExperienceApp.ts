@@ -7,11 +7,15 @@ import { AtmosphereSystem } from '../systems/AtmosphereSystem'
 import { AssetManager } from '../systems/AssetManager'
 import { AudioManager } from '../systems/AudioManager'
 import { CloudSystem } from '../systems/CloudSystem'
+import { EarthCurvatureSystem } from '../systems/EarthCurvatureSystem'
 import { EntitySystem } from '../systems/EntitySystem'
 import { GroundSystem } from '../systems/GroundSystem'
 import { LightingSystem } from '../systems/LightingSystem'
+import { OrbitalSystem } from '../systems/OrbitalSystem'
 import { PerformanceMonitor } from '../systems/PerformanceMonitor'
 import { QualityManager } from '../systems/QualityManager'
+import { RocketTrailSystem } from '../systems/RocketTrailSystem'
+import { StarfieldSystem } from '../systems/StarfieldSystem'
 import { ZoneManager } from '../zones/ZoneManager'
 import { SceneRenderer } from './SceneRenderer'
 
@@ -31,6 +35,10 @@ export class ExperienceApp {
   private readonly lighting: LightingSystem
   private readonly ground: GroundSystem
   private readonly clouds: CloudSystem
+  private readonly stars: StarfieldSystem
+  private readonly earthCurvature: EarthCurvatureSystem
+  private readonly rocketTrail: RocketTrailSystem
+  private readonly orbit: OrbitalSystem
   private readonly entities: EntitySystem
   private readonly audio = new AudioManager()
 
@@ -68,9 +76,17 @@ export class ExperienceApp {
     this.lighting = new LightingSystem(this.sceneRenderer.scene)
     this.ground = new GroundSystem(this.sceneRenderer.scene)
 
-    this.loading.setProgress(0.74, 'Generating clouds and prototype entities.')
+    this.loading.setProgress(0.74, 'Preparing premium flight and orbital entities.')
     this.clouds = new CloudSystem(this.sceneRenderer.scene, this.qualityManager.preset)
-    this.entities = new EntitySystem(this.sceneRenderer.scene)
+    this.stars = new StarfieldSystem(this.sceneRenderer.scene, this.qualityManager.preset)
+    this.earthCurvature = new EarthCurvatureSystem(this.sceneRenderer.scene)
+    this.rocketTrail = new RocketTrailSystem(this.sceneRenderer.scene, this.qualityManager.preset)
+    this.orbit = new OrbitalSystem(this.sceneRenderer.scene, this.qualityManager.preset)
+    this.entities = new EntitySystem(
+      this.sceneRenderer.scene,
+      this.assetManager,
+      this.qualityManager.preset,
+    )
     this.loading.hide()
   }
 
@@ -105,7 +121,11 @@ export class ExperienceApp {
     this.lighting.update(state)
     this.ground.update(state)
     this.clouds.update(state, this.elapsed)
-    const entityLabel = this.entities.update(state, this.elapsed)
+    this.stars.update(state, this.elapsed)
+    this.earthCurvature.update(state, this.elapsed)
+    this.rocketTrail.update(state, this.elapsed, this.sceneRenderer.camera)
+    this.orbit.update(state, this.elapsed)
+    const entityLabel = this.entities.update(state, this.elapsed, this.sceneRenderer.camera)
     this.audio.update(state)
 
     this.hud.update(state, entityLabel)
@@ -124,7 +144,7 @@ export class ExperienceApp {
       return 0
     }
 
-    return (this.params.initialZone - 1) / this.zoneManager.zones.length
+    return this.zoneManager.zones.find((zone) => zone.id === this.params.initialZone)?.start ?? 0
   }
 
   private handleIdleReset(): void {
@@ -151,5 +171,9 @@ export class ExperienceApp {
 
     this.sceneRenderer.applyQuality(next)
     this.clouds.applyQuality(next)
+    this.stars.applyQuality(next)
+    this.rocketTrail.applyQuality(next)
+    this.orbit.applyQuality(next)
+    this.entities.applyQuality(next)
   }
 }

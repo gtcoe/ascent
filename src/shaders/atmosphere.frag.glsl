@@ -11,9 +11,13 @@ void main() {
   vec3 sky = mix(uBottomColor, uTopColor, vertical);
 
   float horizonGlow = pow(1.0 - abs(vWorldDirection.y), 3.0);
+  float spaceReveal = smoothstep(0.62, 0.92, uProgress);
+  float orbitReveal = smoothstep(0.86, 1.0, uProgress);
   vec3 warmGlow = vec3(1.0, 0.66, 0.30) * horizonGlow * (1.0 - uProgress) * 0.36;
-  vec3 highBlueGlow = vec3(0.32, 0.76, 1.0) * horizonGlow * uHaze * 0.28;
-  vec3 spaceTint = mix(sky, vec3(0.01, 0.025, 0.06), smoothstep(0.72, 1.0, uProgress) * 0.35);
+  vec3 highBlueGlow = vec3(0.28, 0.72, 1.0) * horizonGlow * uHaze * (0.24 + spaceReveal * 0.62);
+  vec3 limbGlow = vec3(0.34, 0.92, 1.0) * pow(horizonGlow, 0.62) * orbitReveal * 0.32;
+  vec3 deepSpace = vec3(0.0, 0.004, 0.018);
+  vec3 spaceTint = mix(sky, deepSpace, spaceReveal * (0.48 + orbitReveal * 0.32));
 
-  gl_FragColor = vec4(spaceTint + warmGlow + highBlueGlow, 1.0);
+  gl_FragColor = vec4(spaceTint + warmGlow + highBlueGlow + limbGlow, 1.0);
 }

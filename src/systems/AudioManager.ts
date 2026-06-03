@@ -14,6 +14,9 @@ const voiceConfig: Record<AmbienceKey, { frequency: number; type: OscillatorType
   fog: { frequency: 64, type: 'sine' },
   highWind: { frequency: 212, type: 'sawtooth' },
   engine: { frequency: 48, type: 'sawtooth' },
+  thinStratosphere: { frequency: 318, type: 'triangle' },
+  rocketAscent: { frequency: 76, type: 'sawtooth' },
+  orbitalSilence: { frequency: 38, type: 'sine' },
 }
 
 export class AudioManager {

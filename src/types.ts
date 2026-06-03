@@ -8,6 +8,10 @@ export interface QualityPreset {
   cloudCount: number
   particleScale: number
   shadows: boolean
+  starCount: number
+  trailParticles: number
+  orbitalAccents: number
+  modelRenderScale: number
 }
 
 export interface ZoneDefinition {
@@ -30,11 +34,41 @@ export interface ZoneDefinition {
   lightColor: ColorRepresentation
   lightIntensity: [number, number]
   entity: EntityKey
+  entityMotion: EntityMotionDefinition
   ambience: AmbienceKey
 }
 
-export type EntityKey = 'peacock' | 'hotAirBalloon' | 'glider' | 'commercialJet' | 'weatherBalloon'
-export type AmbienceKey = 'ground' | 'lowSky' | 'fog' | 'highWind' | 'engine'
+export interface EntityMotionDefinition {
+  mode: 'flyby' | 'grounded'
+  x: number
+  distance: number
+  startY: number
+  endY: number
+  driftX?: number
+  driftSpeed?: number
+  driftPhase?: number
+  bobY?: number
+  bobSpeed?: number
+}
+
+export type EntityKey =
+  | 'peacock'
+  | 'hotAirBalloon'
+  | 'glider'
+  | 'commercialJet'
+  | 'weatherBalloon'
+  | 'stratosphericBalloon'
+  | 'soundingRocket'
+  | 'spaceStation'
+export type AmbienceKey =
+  | 'ground'
+  | 'lowSky'
+  | 'fog'
+  | 'highWind'
+  | 'engine'
+  | 'thinStratosphere'
+  | 'rocketAscent'
+  | 'orbitalSilence'
 
 export interface ZoneState {
   zone: ZoneDefinition
